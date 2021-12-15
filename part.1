@@ -84,3 +84,22 @@ E
 
 중복된 값을 제외하는 select문은 select distinct dept_cd from practice.select_test; 이다.
 -----------------------------------------------------------
+
+
+연결 연산자 함수로 column값을 붙여서 출력하기-------------------
+여러 column값이나 문자열로 된 표현식의 값을 붙여서 하나의 column으로 표현할 수 있다.
+예를 들어, '홍길동의 부서코드는 A입니다.' 이런 형식의 데이터를 만들어 출력할 수 있다.
+
+select concat(name, '의 부서코드는 ', dept_cd, ' 입니다.') from practice.select_test;
+- concat이라는 문자열 또는 칼럼의 값을 연결해주는 함수를 사용한 것이다.
+
+*실행결과*
+홍길동의 부서코드는 A 입니다.
+등등
+
+select concat(name, '의 부서코드는 ', dept_cd, ' 입니다.') from practice.select_test where name = '손흥민';
+
+
+
+
+
