@@ -1,0 +1,86 @@
+create database practice;
+- practice라는 databse를 생성
+
+create table `select table` (
+  name varchar(50),
+  dept_cd varchar(1),
+  phone varchar(15),
+  address varchar(100)
+);
+- select table이라는 table을 만드는데 name, dept_cd, phone, address라는 항목을 가지게 함
+
+desc select_test;
+-테이블의 column 목록을 확인-
+
+
+원하는 데이터만 select하기------------------------------------------------------------
+
+select * from practice.select_test;
+- select문을 사용하여 테이블의 column 목록 확인
+- * 는 전체를 뜻함
+- practice.~~~는 practice에 있는 ~~~를 뜻함
+
+*실행결과*
+데이터가 들어 있지 않아 column명만 표시됨
+
+insert into practice.select_test (name, dept_cd, phone, address) values ('홍길동', 'A', '01023456789', '조선 한양읍');
+- practice.select_test에 있는 name, dept_cd, phone, address에 홍길동, A 01023456789, 조선 한양읍이라는 데이터를 차례대로 넣음
+
+INSERT INTO practice.select_test (name, dept_cd, phone, address) VALUES ('손흥민', 'A', '0112345434', '영국 런던 '); 
+INSERT INTO practice.select_test (name, dept_cd, phone, address) VALUES ('박찬호', 'C', '01023433456', '충남 공주 '); 
+INSERT INTO practice.select_test (name, dept_cd, phone, address) VALUES ('김유신', 'D', '0187766645', '신라 경주 '); 
+INSERT INTO practice.select_test (name, dept_cd, phone, address) VALUES ('박나래', 'D', '0192929384', '서울특별시 영등포구 '); 
+INSERT INTO practice.select_test (name, dept_cd, phone, address) VALUES ('강감찬', 'E', '01023432123', '고려');
+- 이걸 넣고 select * from practice.select_test를 하게 되면 위에서 insert한 데이터가 잘 나오게 됨
+
+select name, phone from practice.select_test;
+- name, phone 항목만 출력되게 함
+
+select * from practice.select_test where dept_cd = 'A';
+- where은 조건절이라고도 함
+- 특정 조건을 입력하여 그에 해당하는 데이터만 가지고 오라는 명령어
+- 이 코드에서는 dept_cd가 A인 데이터만 가지고 오라는 뜻임
+*실행결과*
+홍길동 A  . . .
+손흥민 A . . . 
+----------------------------------------------------------
+
+
+Expression 사용하기--------------------------------
+- Expression이란 column의 데이터 외에 다른 문자열이나 내용을 출력하고 싶을 때 사용할 수 있음
+
+select name, '님 안녕하세요!' from practice.select_test;
+- name 데이터와 '님 안녕하세요!' 가 출력 
+---------------------------------------------------
+
+
+column명 대신 alias를 사용하기-----------------------------------------------
+위에서 expression을 사용하여 출력한 것을 alias로 출력하기
+
+select name 이름, '님 안녕하세요!' 인사문구 from practice.select_test;
+- 컬럼명 또는 표현식 구문 뒤에 한 칸 공백을 넣고 별칭으로 쓰고 싶은 단어를 넣음
+- 그리고 컬럼 사이의 구분을 해주는 ', '를 넣어주면됨
+
+select name as 이름, '님 안녕하세요!' as 인사문구 from practice.select_test;
+- 또 다른 방법은 컬럼명, 또는 표현식 구문 뒤에 'as'를 입력하고 별칭을 입력하는 방법
+- 두 방법이 차이는 'as'이다.
+
+*실행결과*
+이름       인사문구
+홍길동     님 안녕하세요!!
+...        ....
+-------------------------------------------------------------
+
+
+distict로 중복된값을 제외하고 출력하기----------------------
+select dept_cd from practice.select_test;
+*실행결과*
+A
+A
+C
+D
+D
+E
+
+중복된 값을 제외하는 select문은 select distinct dept_cd from practice.select_test; 이다.
+-----------------------------------------------------------
