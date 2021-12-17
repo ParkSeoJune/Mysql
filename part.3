@@ -1,0 +1,140 @@
+### SQL 함수의 정의
+- SQL은 여러 가지 함수를 이용해서 출력 값을 변환할 수 있다.
+ - 여기서 함수란? 어떤 값을 받아서 그 값을 어떠한 정해진 정의에 의해 변환시켜 변환된 값을 출력하는 것
+ 
+ DBMS에서 함수를 분류하는 기준
+ - 내장 함수 : 우리가 사용하는 각각의 RDBMS에 이미 내장된 함수를 뜻함
+ - 사용자 정의 함수 : 내장 함수를 제외하고 'create function'문을 사용해서 자신이 필요한 변환 규칙을 적용해 개개인의 유저 혹은 DBA, 개발자들이 만든 함수를 뜻함
+ - 단일행 함수 : 한 행(row)의 값을 받아서 특정 규칙과 정의를 통해 변환시키는 함수
+ - 복수행 함수 : 여러 행의 값을 한번에 받아서 하나의 행(row)의 결과 값으로 되돌려주는 함수 ex) count()
+ - 문자 함수, 숫자 함수, 날짜 함수, 형 변환 함수, 일반 함수 등
+ 
+#문자 함수 실습을 위한 데이터
+ 
+create table practice.country
+(
+  country_name varchar(100),
+  capital_city varchar(100),
+  continent varchar(100)
+);
+
+INSERT INTO practice.country (country_name, capital_city, continent) VALUES ('USA', 'Washington', 'America'); 
+INSERT INTO practice.country (country_name, capital_city, continent) VALUES ('England', 'London', 'Europe'); 
+INSERT INTO practice.country (country_name, capital_city, continent) VALUES ('S.Korea', ' Seoul', 'Asia'); 
+INSERT INTO practice.country (country_name, capital_city, continent) VALUES ('Australia', ' Canberra', 'Oceania'); 
+INSERT INTO practice.country (country_name, capital_city, continent) VALUES ('Ghana', 'Accra', 'Africa'); 
+INSERT INTO practice.country (country_name, capital_city, continent) VALUES ('Argentina', 'Buenos aires', 'America');
+
+select * from practice.country;
+
+### lower/upper 함수 사용하기
+- lower, upper는 각 입력된 문자를 소문자 / 대문자로 변경시키는 함수이다
+
+ex) lower 함수는 'KOREA'라는 문자를 'korea'로 변환하여 출력하고, upper 함수는 반대로 'korea'를 'KOREA'로 변환하여 출력
+
+- 사용법은 lower(칼럼명), upper(칼럼명)으로 사용
+
+select country_name as 원본, lower(country_name) as 소문자, upper(country_name) as 대문자 from practice.country;
+
+*실행결과*
+- 첫 번째 '원본'이 원본 데이터이다.
+- 두 번째 '소문자'가 lower 함수
+- 마지막 '대문자'가 upper 함수의 결과 출력 값을 나타냄
+
+
+### length 함수 사용하기
+-length 함수는 데이터의 길이를 세어 숫자로 리턴을 해주는 함수
+(사용법)
+select country_name, length(country_name) as 길이 from practice.country;
+*실행결과*
+- 'USA'는 세글자니깐 3을 리턴
+- 'S.Korea'는 점까지 세면 모두 일곱 글자이니깐 7을 리턴
+
+
+### concat 함수 사용하기
+- concat은 문자나, 컬럼 값을 붙여서 출력시킬 수 있다.
+(사용법)
+concat(칼럼 값, 칼럼 값, '문자열,'문자열) 
+
+ex)
+select concat(country_name, ' 의 수도는 ', capital_city, ' 입니다!') as 수도소개 from practice.country;
+- 칼럼명을 쓸 때는 그냥 컬럼명을 쓰고 ''를 붙이면 된다
+*실행결과*
+USA 의 수도는 Washington 입니다!
+
+
+### substr/mid/substring 함수 사용하기
+- substr과 mid, substring 함수는 똑같은 함수이다
+- 사용법이 같고 리턴해주는 값 역시 같다.
+
+substr(칼럼명, 시작할 문자열의 위치 값, 리턴 시킬 값의 길이)
+
+select continent as 원본, substr(continent,2,2) as substr, mid(continent,2,2) as mid, substring(continent,2,2) as substring from practice.country;
+- 실행해보면 세 함수의 리턴 값이 같다는 것을 확인할 수 있다.
+- 함수 안에 칼럼명이라던지, 숫자 등을 입력할 때 이것을 파라미터라고 부르는데, 똑같이 (continent,2,2)라고 파라미터를 입력했다.
+- continent 칼럼 값인 'America'의 두 번째 글자인 'm'에서 2자리를 리턴하라는 파라미터 값이다.
+- 그래서 'me'라는 값이 리턴되고, 그 아래 'Europe'을 봐도 두 번째 글자인 'u'에서 두 글자를 리턴하니깐 'ur'이 리턴됨
+
+select continent as 원본, substr(continent,3,1) as substr, mid(continent,3,3) as mid, substring(continent,3,5) as substring from practice.country;
+- 세 번쨰 row의 값인 'Asia'를 보면 첫 번째 함수는 i, 두 번째 함수는 ia만 나왔다. 그 이유는 원문 자체가 짧기 때문에 ia만 리턴이 된 것이다.
+
+### instr 함수 사용하기
+- instr 함수는 특정 문자열의 위치를 숫자로 리턴해주는 함수이다.
+- 사용법은 instr(칼럼 값, '찾는 문자')이다.
+
+ex)
+select continent as 원본, instr(continent, 'A') as instr from practice.country;
+- 왼쪽 원본 데이터에서 'A'라는 문자가 어디에 있는지 찾아서 해당 위치를 숫자로 리턴해준다.
+- 'America'를 보면 가장 앞에 'A'가 있으므로 1이라는 숫자를 리턴
+- 네 번째 row에 있는 'Oceania'를 보면 'A'문자가 4번째 위치해 있으니 4를 리턴
+- 여기서 주의!!! instr는 대소문자를 구별하지 않는다!!!
+
+
+### lpad/rpad 함수 사용하기
+- lpad와 rpad는 간단하게 설명하자면 데이터가 있고, 해당 데이터가 어떤 기준보다 짧을 경우에 원하는 문자를 왼쪽이나 오른쪽으로 자릿수를 맞춰 채워주는 함수이다.
+- 사용법은 lpad와 rpad 모두 동일 lpad(칼럼명, 기준 자릿수, 채워 넣을 숫자 or 문자)이다.
+
+ex)
+select continent as 원본, lpad(continent,10,'A') as lpad, rpad(continent, 10, 'A') as rpad from practice.country;
+- 기준 자릿수를 둘 다 10으로 주었으니 10자리의 문자열을 만들고, lpad는 왼쪽, rpad는 오른쪽에 파라미터로 지정한 'A'라는 문자열을 칼럼 값이 들어가고 남은 빈자리에 채워 넣었다.
+
+lpad            rpad
+AAAAmerica      AmericaAAA
+
+
+### trim/ltrim/rtrim 함수 사용하기
+trim, ltrim과 rtrim 역시 비슷한 기능을 가진 함수들이다.
+
+trim : 어떤 문자열의 양쪽, 즉 왼쪽, 오른쪽의 공백을 없애는 함수
+ltrim : 왼쪽의 공백만 없애는 함수
+rtrim : 오른쪽의 공백만 없애는 함수
+
+사용법은 세 함수 모두 같다. trim(칼럼명)
+
+ex)
+select capital_city as 원본, trim(capital_city) as trim, ltrim(capital_city) as ltrim, rtrim(capital_city) as rtrim from practice.country;
+*실행결과*
+원본         trim          ltrim           rtrim
+Wahington    Washington    Washington      Washington
+London       London        London          London
+  Seoul      Seoul         Seoul             Seoul
+ Canberra    Canberra      Canberra         Cnaberra
+등
+
+
+### replace 함수 사용하기
+replace 함수는 특정 문자열을 찾아서 다른 문자열로 치환하는 함수
+사용법은 replace(칼럼명, '찾을 문자', '치환할 문자')이다.
+
+ex)
+select continent as 원본, replace(continent, 'A', '@') as 'replace' from practice.country;
+*실행결과*
+원본         `replace`
+America      @merica
+Europe       Europe
+Asia         @sia
+
+- replace 함수의 파라미터를 보면 continent 칼럼에서 'A' 값을 찾아 '@'로 치환하여 출력하라는 명령을 준 것을 확인할 수 있다.
+- instr 함수와는 다르게 대소문자 구분을 한다는게 특징이다!!
+
+
